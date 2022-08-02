@@ -145,6 +145,10 @@ module.exports = (job, settings) => {
             // env: { PATH: path.dirname(settings.binary) },
         });
 
+        if (settings.debug) {
+            settings.logger.log(`[${job.uid}] aerender process pid: ${instance.pid}`);
+        }
+
         instance.on('error', err => reject(new Error(`Error starting aerender process: ${err}`)));
 
         instance.stdout.on('data', (data) => {
@@ -158,7 +162,10 @@ module.exports = (job, settings) => {
         });
 
         /* on finish (code 0 - success, other - error) */
-        instance.on('close', (code) => {
+        instance.on('exit', (code) => {
+            if (settings.debug) {
+                settings.logger.log(`[${job.uid}] aerender exited with code: ${code}`);
+            }
 
             const outputStr = output
                 .map(a => '' + a).join('');
