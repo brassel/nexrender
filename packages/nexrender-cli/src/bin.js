@@ -6,6 +6,7 @@ const chalk            = require('chalk')
 const {version}        = require('../package.json')
 const {init, render}   = require('@nexrender/core')
 const rimraf           = require('rimraf')
+const { exit }         = require('process');
 
 const args = arg({
     // Types
@@ -220,9 +221,11 @@ settings = init(Object.assign(settings, {
 
 render(parsedJob, settings)
     .then(() => {
-        console.log('> job rendering successfully finished')
+        console.log('> job rendering successfully finished');
+        exit(0);
     })
     .catch(err => {
-        console.error('> job rendering failed')
-        console.error(err)
+        console.error('> job rendering failed');
+        console.error(err);
+        exit(1);
     })
